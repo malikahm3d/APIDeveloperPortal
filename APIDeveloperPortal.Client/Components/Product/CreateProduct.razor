@@ -3,6 +3,8 @@
 @using System.Text
 @page "/create-product"
 @inject NavigationManager NavigationManager
+@implements IDisposable
+@inject PersistentComponentState ApplicationState
 
 <h3>Create Product</h3>
 
@@ -14,12 +16,40 @@
 </EditForm>
 
 @code {
-    private Product product; // Initialize an empty Product object
+    [SupplyParameterFromForm]
+    public Product? product { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    private const string productForm = "productForm";
+    private PersistingComponentStateSubscription persistingSubscription;
+
+    protected override void OnInitialized()
     {
-        product = new();
+        persistingSubscription = ApplicationState.RegisterOnPersisting(PersistData);
+
+        if (!ApplicationState.TryTakeFromJson<Product>(productForm, out var restored))
+        {
+            product ??= new();
+
+        }
+        else
+        {
+            product = restored;
+        }
     }
+
+    private Task PersistData()
+    {
+        ApplicationState.PersistAsJson(productForm, product);
+
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+    {
+        persistingSubscription.Dispose();
+    }
+
+
 
     private async Task HandleFormSubmit()
     {
