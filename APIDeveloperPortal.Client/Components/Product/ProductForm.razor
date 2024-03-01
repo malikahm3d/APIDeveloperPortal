@@ -1,0 +1,66 @@
+﻿@using APIDeveloperPortal.Client.Models
+@using System.Text.Json.Serialization
+@using System.Text
+@using APIDeveloperPortal.Client.Services
+@inject NavigationManager NavigationManager
+@inject IProductService ProductService
+@implements IDisposable
+@inject PersistentComponentState ApplicationState
+
+<h3>ProductForm</h3>
+<EditForm Model="product" OnSubmit="eventCallback" FormName="CreateProduct">
+    <label for="productName">Product Name:</label>
+    <InputText id="productName" type="text" @bind-Value="product.ProductName" />
+
+    <button type="submit">Create</button>
+</EditForm>
+
+@code {
+
+    
+    public Product product { get; set; }
+
+    [Parameter]
+    public EventCallback eventCallback { get; set; }
+    [Parameter]
+    public int? Id { get; set; }
+
+    private const string productForm = "productForm";
+    private PersistingComponentStateSubscription persistingSubscription;
+
+    protected override async Task OnInitializedAsync()
+    {
+        persistingSubscription = ApplicationState.RegisterOnPersisting(PersistData);
+
+        if (!ApplicationState.TryTakeFromJson<Product>(productForm, out var restored))
+        {
+            if(Id != null)
+            {
+                var producToEdit = await ProductService.GetProductById(Id.Value);
+                if (producToEdit != null)
+                {
+                    product = producToEdit;
+                }
+            }
+            product ??= new();
+
+        }
+        else
+        {
+            product = restored;
+        }
+    }
+
+    private Task PersistData()
+    {
+        ApplicationState.PersistAsJson(productForm, product);
+
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+    {
+        persistingSubscription.Dispose();
+    }
+
+}

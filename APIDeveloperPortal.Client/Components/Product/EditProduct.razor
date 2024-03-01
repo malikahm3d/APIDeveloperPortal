@@ -2,28 +2,25 @@
 @using System.Text.Json.Serialization
 @using System.Text
 @using APIDeveloperPortal.Client.Services
-@page "/products/create"
-@inject IProductService ProductService
+@page "/products/edit/{Id:int}"
 @inject NavigationManager NavigationManager
+@inject IProductService ProductService
 
 <h3>Create Product</h3>
 
-<ProductForm eventCallback="HandleFormSubmit" />
+<ProductForm eventCallback="EditProductFunction" Id="Id" />
 
 @code {
 
 
     [SupplyParameterFromForm]
     public Product product { get; set; }
+    [Parameter]
+    public int Id { get; set; }
 
-    private async Task HandleFormSubmit()
+    private async Task EditProductFunction()
     {
-        var newProduct = new Product
-            {
-                ProductName = product.ProductName,
-            };
-
-        await ProductService.CreateProduct(newProduct);
+        await ProductService.UpdateProduct(Id, product);
         NavigationManager.NavigateTo("/");
     }
 }

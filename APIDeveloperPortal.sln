@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIDeveloperPortal.Client", "APIDeveloperPortal.Client\APIDeveloperPortal.Client.csproj", "{10F45A69-92DC-4E03-9BDB-E0A6E225AD47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIDeveloperPortal.Client", "APIDeveloperPortal.Client\APIDeveloperPortal.Client.csproj", "{10F45A69-92DC-4E03-9BDB-E0A6E225AD47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIDeveloperPortal.API", "APIDeveloperPortal.API\APIDeveloperPortal.API.csproj", "{6C3D7227-BB6D-4A3A-8D72-8E1E889B61C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIDeveloperPortal.API", "APIDeveloperPortal.API\APIDeveloperPortal.API.csproj", "{6C3D7227-BB6D-4A3A-8D72-8E1E889B61C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,7 @@
 using APIDeveloperPortal.Client.Components;
 using APIDeveloperPortal.Client.Components.Account;
 using APIDeveloperPortal.Client.Data;
+using APIDeveloperPortal.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,9 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+builder.Services.AddScoped<HttpClient>();
+
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddAuthentication(options =>
     {
