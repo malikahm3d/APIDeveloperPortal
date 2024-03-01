@@ -1,0 +1,63 @@
+﻿@using APIDeveloperPortal.Client.Models
+@using System.Text.Json.Serialization
+@using System.Text
+@page "/create-product"
+@inject NavigationManager NavigationManager
+
+<h3>Create Product</h3>
+
+<EditForm Model="product" OnSubmit="HandleFormSubmit" FormName="CreateProduct">
+    <label for="productName">Product Name:</label>
+    <InputText id="productName" type="text" @bind-Value="product.ProductName" />
+
+    <button type="submit">Create</button>
+</EditForm>
+
+@code {
+    private Product product; // Initialize an empty Product object
+
+    protected override async Task OnInitializedAsync()
+    {
+        product = new();
+    }
+
+    private async Task HandleFormSubmit()
+    {
+        // Use the product object in your create logic
+        // For example, create a new Product with the form values
+        var newProduct = new Product
+            {
+                ProductName = product.ProductName,
+            };
+
+        // Perform create logic with newProduct using API call
+        await CreateProductApiCall(newProduct);
+    }
+
+    private async Task CreateProductApiCall(Product newProduct)
+    {
+        // Assuming you have an API endpoint for creating products
+        // Adjust the API endpoint and request format based on your API
+        var apiUrl = "https://localhost:7056/api/products"; // Replace with your actual API URL
+
+        using (var httpClient = new HttpClient())
+        {
+            //var content = new StringContent(JsonConverter.(newProduct), Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsJsonAsync<Product>(apiUrl, newProduct);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Successful API call, handle success as needed
+                Console.WriteLine("Product created successfully!");
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                // Handle API call failure, e.g., log error, display error message, etc.
+                Console.WriteLine($"Error creating product. Status code: {response.StatusCode}");
+            }
+        }
+    }
+
+}
