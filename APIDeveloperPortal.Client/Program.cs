@@ -17,6 +17,7 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 builder.Services.AddScoped<HttpClient>();
+builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IProductService, ProductService>();
 

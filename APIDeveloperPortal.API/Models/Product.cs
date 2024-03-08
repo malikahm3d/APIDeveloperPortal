@@ -5,7 +5,7 @@ namespace APIDeveloperPortal.API.Models;
 
 public partial class Product
 {
-    public int Id { get; }
+    public int Id { get; set; }
 
     public string? ProductName { get; set; }
 

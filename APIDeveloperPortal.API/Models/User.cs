@@ -11,7 +11,5 @@ public partial class User
 
     public string? Email { get; set; }
 
-    public int? ProductId { get; set; }
-
     public virtual ICollection<UsersProductsBridge> UsersProductsBridges { get; set; } = new List<UsersProductsBridge>();
 }

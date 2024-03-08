@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 namespace APIDeveloperPortal.Client.Models;
-
 public partial class UsersProductsBridge
 {
     public int Id { get; set; }

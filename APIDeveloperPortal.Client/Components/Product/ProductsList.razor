@@ -1,0 +1,21 @@
+﻿@using APIDeveloperPortal.Client.Models
+@using APIDeveloperPortal.Client.Services
+@inject IProductService ProductService
+@page "/products"
+
+<h3>ProductsList</h3>
+@foreach(var product in products)
+{
+    <h3>@product.ProductName</h3>
+}
+
+
+@code {
+    private Product[] products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.GetProducts();
+    }
+
+}

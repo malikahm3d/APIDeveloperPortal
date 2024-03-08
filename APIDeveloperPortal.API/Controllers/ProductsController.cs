@@ -40,7 +40,7 @@ namespace APIDeveloperPortal.API.Controllers
                 return NotFound();
             }
 
-            return product;
+            return Ok(product);
         }
 
         // PUT: api/Products/5
@@ -49,12 +49,17 @@ namespace APIDeveloperPortal.API.Controllers
         public async Task<IActionResult> PutProduct(int id, ProductVM product)
         {
             Product productToEdit = new Product() { ProductName = product.ProductName };
-
-            _context.Entry(productToEdit).State = EntityState.Modified;
-
+            var productToChange = await _context.Products.FindAsync(id);
+            if(productToChange is null)
+            {
+                return NotFound();
+            }
+            productToChange.ProductName = product.ProductName;
+            _context.Products.Update(productToChange);
             try
             {
                 await _context.SaveChangesAsync();
+                return Ok(productToChange);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -74,7 +79,32 @@ namespace APIDeveloperPortal.API.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(ProductVM product)
+        public async Task<ActionResult<Product>> PostProduct(ProductVM vm)
+        {
+            if (ModelState.IsValid)
+            {
+                // Map the view model to your domain model or use a mapper library
+                var product = new Product
+                {
+                    ProductName = vm.ProductName,
+                    ProductServices = new List<ProductService>(), // You might need to handle services as well
+                    UsersProductsBridges = vm.SelectedUserIds
+                        .Select(userId => new UsersProductsBridge { UserId = userId })
+                        .ToList()
+                };
+
+                await _context.Products.AddAsync(product);
+                await _context.SaveChangesAsync();
+
+                return Ok(); // Or return the created product or an appropriate response
+            }
+
+            return BadRequest(ModelState);
+        }
+    
+
+        [HttpPost("Model")]
+        public async Task<ActionResult<Product>> PostProduct(Product product)
         {
             Product productToAdd = new Product() { ProductName = product.ProductName };
 

@@ -1,14 +1,30 @@
 ﻿@using APIDeveloperPortal.Client.Models
 @using System.Text.Json.Serialization
 @using System.Text
+@using APIDeveloperPortal.Client.Models.VMs
 @using APIDeveloperPortal.Client.Services
+@using System.Net.Http
 @inject NavigationManager NavigationManager
 @inject IProductService ProductService
-@implements IDisposable
-@inject PersistentComponentState ApplicationState
+@inject IHttpClientFactory ClientFactory
 
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 <h3>ProductForm</h3>
 <EditForm Model="product" OnSubmit="eventCallback" FormName="CreateProduct">
+
+
+    <div>
+        <label for="SelectedUserIds">Select Users:</label>
+        <InputSelect id="SelectedUserIds" multiple="true" @bind-Value="@product.SelectedUserIds">
+            @if (product.AvailableUsers is not null){
+            @foreach (var user in product.AvailableUsers)
+            {
+                <option value="@user.Id">@user.UserName</option>
+            }
+            }
+        </InputSelect>
+    </div>
+    
     <label for="productName">Product Name:</label>
     <InputText id="productName" type="text" @bind-Value="product.ProductName" />
 
@@ -17,50 +33,17 @@
 
 @code {
 
-    
-    public Product product { get; set; }
-
+    [Parameter]
+    public ProductVM? product { get; set; }
     [Parameter]
     public EventCallback eventCallback { get; set; }
-    [Parameter]
-    public int? Id { get; set; }
-
-    private const string productForm = "productForm";
-    private PersistingComponentStateSubscription persistingSubscription;
 
     protected override async Task OnInitializedAsync()
     {
-        persistingSubscription = ApplicationState.RegisterOnPersisting(PersistData);
-
-        if (!ApplicationState.TryTakeFromJson<Product>(productForm, out var restored))
-        {
-            if(Id != null)
-            {
-                var producToEdit = await ProductService.GetProductById(Id.Value);
-                if (producToEdit != null)
-                {
-                    product = producToEdit;
-                }
-            }
-            product ??= new();
-
-        }
-        else
-        {
-            product = restored;
-        }
+        var customClient = ClientFactory.CreateClient();
+        product.AvailableUsers = await customClient.GetFromJsonAsync<List<User>>("https://localhost:7056/api/Users");
     }
 
-    private Task PersistData()
-    {
-        ApplicationState.PersistAsJson(productForm, product);
 
-        return Task.CompletedTask;
-    }
-
-    void IDisposable.Dispose()
-    {
-        persistingSubscription.Dispose();
-    }
 
 }

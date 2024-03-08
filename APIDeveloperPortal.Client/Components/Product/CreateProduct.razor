@@ -1,29 +1,41 @@
 ﻿@using APIDeveloperPortal.Client.Models
 @using System.Text.Json.Serialization
 @using System.Text
+@using APIDeveloperPortal.Client.Models.VMs
 @using APIDeveloperPortal.Client.Services
+@using System.Net.Http
+
 @page "/products/create"
 @inject IProductService ProductService
 @inject NavigationManager NavigationManager
-
+@inject IHttpClientFactory ClientFactory
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 <h3>Create Product</h3>
 
-<ProductForm eventCallback="HandleFormSubmit" />
+<ProductForm eventCallback="HandleFormSubmit" product="ProductVM" />
 
 @code {
 
-
     [SupplyParameterFromForm]
-    public Product product { get; set; }
+    public ProductVM ProductVM { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+
+        ProductVM = new();
+    }
     private async Task HandleFormSubmit()
     {
         var newProduct = new Product
             {
-                ProductName = product.ProductName,
+                ProductName = ProductVM.ProductName,
             };
 
-        await ProductService.CreateProduct(newProduct);
-        NavigationManager.NavigateTo("/");
+        var customClient = ClientFactory.CreateClient();
+        var response = await customClient.PostAsJsonAsync("https://localhost:7056/api/Products", ProductVM);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/");
+        }
     }
 }

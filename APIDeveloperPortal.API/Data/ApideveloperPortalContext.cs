@@ -33,11 +33,7 @@ public partial class ApideveloperPortalContext : DbContext
         modelBuilder.Entity<Product>(entity =>
         {
             entity.Property(e => e.ProductName).HasMaxLength(500);
-
-            // Specify the primary key
-            entity.HasKey(e => e.Id); // Replace ProductId with the actual property name of your primary key
         });
-
 
         modelBuilder.Entity<ProductService>(entity =>
         {
