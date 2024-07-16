@@ -42,6 +42,20 @@ namespace APIDeveloperPortal.API.Controllers
             return user;
         }
 
+
+        [HttpGet("StudentId{id}")]
+        public async Task<ActionResult<int>> getStudentIt(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+             
+            return user.StudentId;
+        }
+
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

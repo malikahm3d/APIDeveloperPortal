@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace APIDeveloperPortal.API.Models;
 
@@ -15,11 +16,8 @@ public partial class User
     public string FullName { get; set; }
 
 
-
-
-
-
-
+    [Required]
+    public int StudentId { get; set; }
 
 
 
